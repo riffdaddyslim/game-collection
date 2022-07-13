@@ -1,11 +1,10 @@
-import Sprite from "../../Sprite.js";
 import LivingEntity from "../LivingEntity.js";
 
 export default class BasicMob extends LivingEntity {
     #path
     #waypointIndex = 1
 
-    constructor({ path, speed, frames, radius, imgSrc, damage, spacing = 0 } = {}) {
+    constructor({ path, speed, frames, radius, imgSrc, damage, spacing = 0, game } = {}) {
         super({
             position: {
                 x: path[0].x - spacing,
@@ -22,6 +21,7 @@ export default class BasicMob extends LivingEntity {
             damage
         })
         this.#path = path
+        this.game = game
     }
 
     #atWaypoint(wp) {
@@ -44,9 +44,6 @@ export default class BasicMob extends LivingEntity {
 
         const DAMAGE = super.update(c)
         
-        let updates = {}
-        if (this.#path.length === this.#waypointIndex) updates.damage = DAMAGE
-
-        return updates
+        if (this.#path.length === this.#waypointIndex) this.game.updateLife(DAMAGE)
     }
 }

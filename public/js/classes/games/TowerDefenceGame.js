@@ -21,11 +21,8 @@ export default class TowerDefenceGame extends Game {
         super.loadMap(this.#maps[mapIndex]).then(data => {
             this.#paths = data.paths
             for (let buildingPlot of data.buildingPlots) {
-                this.entities.push(new BuildingPlot(buildingPlot))
+                this.entities.push(new BuildingPlot({...buildingPlot, game: this}))
             }
-
-
-
             this.createWave()
             this.animate()
         })
@@ -61,7 +58,8 @@ export default class TowerDefenceGame extends Game {
                     radius: MOB_STATS.radius,
                     imgSrc: MOB_STATS.imgSrc,
                     damage: MOB_STATS.damage,
-                    spacing: currentSpacing
+                    spacing: currentSpacing,
+                    game: this
                 }))
                 
                 if (GROUP.spacing) currentSpacing += GROUP.spacing
@@ -94,15 +92,10 @@ export default class TowerDefenceGame extends Game {
                 return a.position.y - b.position.y
             })
             .forEach(entity => {
-                const UPDATES = entity.update(this.context, this.mouse)
-                if (UPDATES) this.#handleUpdates(UPDATES)
+                entity.update(this.context, this.mouse)
             })
 
         this.map.drawDecorations(this.context)
         super.animate()
-    }
-
-    #handleUpdates(updates) {
-        if (updates.damage) this.looseLife(updates.damage)
     }
 }

@@ -6,7 +6,8 @@ export default class Entity extends Sprite {
         size,
         imgSrc,
         frames,
-        renderCenter
+        renderCenter,
+        radius
     } = {}) {
         super({
             position,
@@ -15,6 +16,8 @@ export default class Entity extends Sprite {
             frames,
             renderCenter
         })
+
+        this.radius = radius
     }
 
     getCenter() {
@@ -29,5 +32,9 @@ export default class Entity extends Sprite {
             item.x < this.position.x + this.size.width &&
             item.y > this.position.y &&
             item.y < this.position.y + this.size.height)
+    }
+
+    isCollisionCircle(item) {
+        console.log(item)
     }
 }

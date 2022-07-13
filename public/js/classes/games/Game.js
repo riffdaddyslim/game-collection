@@ -9,8 +9,7 @@ export default class Game {
     #score = 0
 
     constructor(canvas, {
-        user = null,
-        totalRounds
+        user = null
     } = {}) {
         this.#canvas = canvas
         this.context = canvas.getContext("2d")
@@ -58,6 +57,7 @@ export default class Game {
         this.context.fillStyle = "white"
         this.context.font = "bold 20px Verdana"
         this.context.fillText(this.#user.lives, this.#canvas.width - 140, 25)
+        this.context.fillText(this.#user.cash, this.#canvas.width - 50, 25)
     }
 
     animate() {
@@ -94,8 +94,14 @@ export default class Game {
         this.#gameOver()
     }
 
-    looseLife(amount) {
+    updateLife(amount) {
         this.#user.lives -= amount
         if (this.#user.lives <= 0) this.end()
+    }
+
+    updateCash(cost) {
+        if (this.#user.cash < cost) return false
+        this.#user.cash -= cost
+        return true
     }
 }

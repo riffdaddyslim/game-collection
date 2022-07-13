@@ -21,13 +21,13 @@ export default class LivingEntity extends Entity {
             size,
             imgSrc,
             frames,
-            renderCenter
+            renderCenter,
+            radius
         })
 
         this.spawned = true
         this.speed = speed
         this.target = target
-        this.radius = radius
         
         this.#damage = damage
         this.#lives = lives

@@ -2,7 +2,7 @@ import Tower from "../buildings/Tower.js"
 import Entity from "../Entity.js"
 
 export default class BuildingPlot extends Entity {
-    constructor({ x, y, width, height } = {}) {
+    constructor({ x, y, width, height, game } = {}) {
         super({
             position: { x, y },
             size: { 
@@ -11,6 +11,7 @@ export default class BuildingPlot extends Entity {
         })
         this.hovered = false
         this.tower = false
+        this.game = game
     }
 
     #draw(c) {
@@ -26,21 +27,25 @@ export default class BuildingPlot extends Entity {
     update(c, mouse) {
         if (this.tower) this.tower.update(c, mouse)
         else if (this.isCollisionSquare(mouse)) {
-            if (mouse.clicking) this.tower = new Tower({
-                position: {
-                    x: this.position.x,
-                    y: this.position.y - 144 + this.size.height
-                },
-                size: {
-                    width: this.size.width,
-                    height: 144
-                },
-                imgSrc: "/images/tower.png",
-                frames: {
-                    max: 19,
-                    duration: 6
-                }
-            })
+            if (mouse.clicking) {
+                let canAfford = this.game.updateCash(25)
+                if (canAfford) this.tower = new Tower({
+                    position: {
+                        x: this.position.x,
+                        y: this.position.y - 144 + this.size.height
+                    },
+                    size: {
+                        width: this.size.width,
+                        height: 144
+                    },
+                    imgSrc: "/images/tower.png",
+                    frames: {
+                        max: 19,
+                        duration: 6
+                    },
+                    game: this.game
+                })
+            }
             else this.hovered = true
         }
         else this.hovered = false
