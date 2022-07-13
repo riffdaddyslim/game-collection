@@ -1,27 +1,6 @@
-import GameMap from "./Map.js"
+import GameMap from "../maps/GameMap.js"
 
 export default class TowerDefenceGame {
-    static ENEMIES = {
-        orcKing: {
-            imgSrc: "/images/orc.png",
-            radius: 50,
-            frames: {
-                max: 7,
-                duration: 10
-            },
-            speed: 0.3
-        },
-        orc: {
-            imgSrc: "/images/orc.png",
-            radius: 25,
-            frames: {
-                max: 7,
-                duration: 6
-            },
-            speed: 1
-        }
-    }
-
     #c = null
     #map = null
     #running = true

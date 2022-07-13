@@ -1,8 +1,7 @@
-import Entity from "./Entity.js";
-import Sprite from "./Sprite.js";
-import Tower from "./Tower.js";
+import Tower from "../buildings/Tower.js"
+import Entity from "../Entity.js"
 
-export default class TowerPlot extends Entity {
+export default class BuildingPlot extends Entity {
     constructor({ x, y, width, height } = {}) {
         super({
             position: { x, y },
@@ -26,7 +25,7 @@ export default class TowerPlot extends Entity {
 
     update(c, mouse) {
         if (this.tower) this.tower.update(c, mouse)
-        else if (this.isCollisionSquare(mouse.position)) {
+        else if (this.isCollisionSquare(mouse)) {
             if (mouse.clicking) this.tower = new Tower({
                 position: this.position,
                 size: {

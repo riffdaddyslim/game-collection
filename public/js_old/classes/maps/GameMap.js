@@ -1,9 +1,9 @@
-import Enemy from "./Enemy.js"
-import TowerPlot from "./TowerPlot.js"
+import Enemy from "../entities/mobs/Enemy.js"
+import TowerPlot from "../../TowerPlot.js.js"
 
-export default class GameMap {
+export default class TileGameMap {
     static LAYER_LOCATIONS = {
-        background: ["background", "path"],
+        background: ["background", "background_decoration", "path"],
         decorations: ["decoration_1", "decoration_2", "decoration_3"]
     }
 
@@ -13,13 +13,10 @@ export default class GameMap {
     #height
     #columns
     #paths
-    #waves = {
-        current: 0
-    }
 
     #entities = []
 
-    constructor(key) {
+    constructor(mapKey) {
         this.key = key
     }
 
@@ -54,39 +51,7 @@ export default class GameMap {
         return [x * this.#width, y * this.#height]
     }
 
-    #delay(amount) { return new Promise(resolve => setTimeout(resolve, amount)) }
-
-    nextWave() {
-        this.#waves.current++
-        const WAVE = this.#waves.enemies[this.#waves.current]
-        if (WAVE) setTimeout(() => { this.createWave() }, WAVE.delay ?? 0);
-    }
-
-    async createWave() {
-        const WAVE = this.#waves.enemies[this.#waves.current]
-        for (let groupIndex = 0; groupIndex < WAVE.groups.length; groupIndex++) {
-            const GROUP = WAVE.groups[groupIndex]
-            if (GROUP.delay) await this.#delay(GROUP.delay)
-            let currentSpacing = 0
-            for (let count = 1; count <= GROUP.qty; count++) {
-                const PATH_INDEX = GROUP.path ?? Math.floor(Math.random() * this.#paths.length)
-                const ENEMY = new Enemy({
-                    path: this.#paths[PATH_INDEX],
-                    speed: GROUP.type.speed,
-                    imgSrc: GROUP.type.imgSrc,
-                    radius: GROUP.type.radius,
-                    frames: GROUP.type.frames,
-                    spacing: currentSpacing
-                })
-                this.#entities.push(ENEMY)
-                
-                if (GROUP.spacing) currentSpacing += GROUP.spacing
-            }
-        }
-
-        this.nextWave()
-    }
-
+    
     #draw(c, layerId) {
         this.#layers.filter(layer => {
             return GameMap.LAYER_LOCATIONS[layerId].includes(layer.name)
@@ -101,18 +66,6 @@ export default class GameMap {
         })
     }
 
-    animate(c, mouse) {
-        this.#draw(c, "background")
-        
-        this.#entities
-            .filter(entity => entity.spawned || entity instanceof TowerPlot)
-            .sort((a, b) => {
-                return a.position.y - b.position.y
-            })
-            .forEach(entity => {
-                entity.update(c, mouse)
-            })
-
-        this.#draw(c, "decorations")
-    }
+    drawBackground(c) { this.#draw(c, "background") }
+    drawDecorations(c) { this.#draw(c, "decorations") }
 }

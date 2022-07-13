@@ -1,11 +1,11 @@
-import LivingEntity from "./LivingEntity.js";
-import Sprite from "./Sprite.js";
+import Sprite from "../../Sprite.js";
+import LivingEntity from "../LivingEntity.js";
 
-export default class Enemy extends LivingEntity {
+export default class BasicMob extends LivingEntity {
     #path
     #waypointIndex = 1
 
-    constructor({ path, speed, frames, radius, imgSrc, spacing = 0 } = {}) {
+    constructor({ path, speed, frames, radius, imgSrc, damage, spacing = 0 } = {}) {
         super({
             position: {
                 x: path[0].x - spacing,
@@ -19,17 +19,10 @@ export default class Enemy extends LivingEntity {
             frames,
             imgSrc,
             radius,
-            renderPosition: Sprite.RENDER_POSTIONS.top
+            damage,
+            renderPosition: Sprite.RENDER_POSTIONS.topLeft
         })
         this.#path = path
-
-    }
-
-    #draw(c) {
-        // c.fillStyle = "red"
-        // c.beginPath()
-        // c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
-        // c.fill()
     }
 
     #atWaypoint(wp) {
@@ -39,9 +32,13 @@ export default class Enemy extends LivingEntity {
     update(c) {
         this.target = this.#path[this.#waypointIndex]
         if (this.#atWaypoint(this.#path[this.#waypointIndex])) this.#waypointIndex++
-        if (this.#waypointIndex === this.#path.length) return this.spawned = false
+        if (this.#waypointIndex === this.#path.length) this.spawned = false
 
         super.update(c)
-        //this.#draw(c)
+
+        let updates = {}
+        if (this.#path.length === this.#waypointIndex) updates.damage = this.damage
+
+        return updates
     }
 }

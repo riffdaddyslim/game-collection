@@ -1,5 +1,5 @@
-import Entity from "./Entity.js";
-import Sprite from "./Sprite.js";
+import Entity from "../Entity.js";
+import Sprite from "../../Sprite.js";
 
 export default class Tower extends Entity {
     constructor({
