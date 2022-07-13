@@ -1,4 +1,4 @@
-import { delay } from "../../utils.js";
+import { delay, drawText } from "../../utils.js";
 import BasicMob from "../entities/mobs/BasicMob.js";
 import BuildingPlot from "../entities/poi/BuildingPlot.js";
 import Game from "./Game.js";
@@ -72,13 +72,14 @@ export default class TowerDefenceGame extends Game {
 
     renderUI() {
         const TEXT = `Round: ${this.#currentWave + 1} of ${this.#waves[this.mapKey].length}`
-
-        this.context.fillStyle = "rgba(0,0,0,0.6)"
-        this.context.fillRect(0, 0, this.context.measureText(TEXT).width + 25, 40)
-        
-        this.context.fillStyle = "white"
         this.context.font = "bold 20px Verdana"
-        this.context.fillText(TEXT, 10, 25)
+        drawText(this.context, TEXT, 0, 0, { bgColor: "rgba(0,0,0,0.6)", color: "white" })
+
+        // this.context.fillStyle = "rgba(0,0,0,0.6)"
+        // this.context.fillRect(0, 0, this.context.measureText(TEXT).width + 25, 40)
+        
+        // this.context.fillStyle = "white"
+        // this.context.fillText(TEXT, 10, 25)
 
         super.renderUI()
     }

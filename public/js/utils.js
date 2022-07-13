@@ -18,4 +18,23 @@ export function draw3dText(context, text, depth, {
     }
 }
 
+export function drawText(context, text, x, y, { color = "black", bgColor = null, padding = 10, position = "left" } = {}) {
+    const { width, actualBoundingBoxAscent } = context.measureText(text)
+
+    switch (position) {
+        case "right": x -= width + padding * 2
+        default: x = x
+    }
+
+    if (bgColor) {
+        context.fillStyle = bgColor
+        context.fillRect(x, y, width + padding * 2, actualBoundingBoxAscent + padding * 2)
+    }
+
+    context.fillStyle = color
+    context.fillText(text, x + padding, y + padding + actualBoundingBoxAscent - 1)
+
+    return { x, y }
+}
+
 export function delay(amount) { return new Promise(resolve => setTimeout(resolve, amount)) }

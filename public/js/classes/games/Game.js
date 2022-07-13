@@ -1,4 +1,4 @@
-import { draw3dText } from "../../utils.js"
+import { draw3dText, drawText } from "../../utils.js"
 import TileMap from "../maps/TileMap.js"
 
 export default class Game {
@@ -51,13 +51,8 @@ export default class Game {
     }
 
     renderUI() {
-        this.context.fillStyle = "rgba(0,0,0,0.5)"
-        this.context.fillRect(this.#canvas.width - 150, 0, 150, 50)
-
-        this.context.fillStyle = "white"
         this.context.font = "bold 20px Verdana"
-        this.context.fillText(this.#user.lives, this.#canvas.width - 140, 25)
-        this.context.fillText(this.#user.cash, this.#canvas.width - 50, 25)
+        drawText(this.context, `$${this.#user.cash}  |  ${this.#user.lives} Lives`, this.#canvas.width, 0, { bgColor: "rgba(0,0,0,0.6)", color: "white", position: "right" })
     }
 
     animate() {
