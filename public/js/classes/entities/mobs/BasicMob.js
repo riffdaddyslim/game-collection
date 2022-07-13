@@ -19,8 +19,7 @@ export default class BasicMob extends LivingEntity {
             frames,
             imgSrc,
             radius,
-            damage,
-            renderPosition: Sprite.RENDER_POSTIONS.topLeft
+            damage
         })
         this.#path = path
     }
@@ -29,15 +28,24 @@ export default class BasicMob extends LivingEntity {
         return Math.round(this.position.x) === Math.round(wp.x) && Math.round(this.position.y) === Math.round(wp.y)
     }
 
+    #draw(c) {
+        // Render Hitbox
+        // c.fillStyle = "rgba(0,0,0,0.5)"
+        // c.beginPath()
+        // c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+        // c.fill()
+    }
+
     update(c) {
+        this.#draw(c)
         this.target = this.#path[this.#waypointIndex]
         if (this.#atWaypoint(this.#path[this.#waypointIndex])) this.#waypointIndex++
         if (this.#waypointIndex === this.#path.length) this.spawned = false
 
-        super.update(c)
-
+        const DAMAGE = super.update(c)
+        
         let updates = {}
-        if (this.#path.length === this.#waypointIndex) updates.damage = this.damage
+        if (this.#path.length === this.#waypointIndex) updates.damage = DAMAGE
 
         return updates
     }

@@ -22,6 +22,10 @@ export default class Game {
 
         canvas.addEventListener("mousedown", e => {
             this.mouse.clicking = true
+            this.mouse.target = {
+                x: e.offsetX,
+                y: e.offsetY
+            }
         })
         canvas.addEventListener("mouseup", e => {
             this.mouse.clicking = false
@@ -33,7 +37,11 @@ export default class Game {
         this.mouse = {
             x: null,
             y: null,
-            clicking: false
+            clicking: false,
+            target: {
+                x: null,
+                y: null
+            }
         }
     }
 

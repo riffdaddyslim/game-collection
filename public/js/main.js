@@ -13,7 +13,8 @@ const DATA = {
                 duration: 10
             },
             speed: 0.3,
-            damage: 3
+            damage: 3,
+            lives: 20
         },
         orc: {
             imgSrc: "/images/orc.png",
@@ -23,7 +24,8 @@ const DATA = {
                 duration: 6
             },
             speed: 1,
-            damage: 1
+            damage: 1,
+            lives: 2
         }
     },
     waves: {

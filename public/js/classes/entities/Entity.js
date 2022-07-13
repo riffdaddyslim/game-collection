@@ -6,17 +6,22 @@ export default class Entity extends Sprite {
         size,
         imgSrc,
         frames,
-        renderPosition,
-        offset
+        renderCenter
     } = {}) {
         super({
             position,
             size,
             imgSrc,
             frames,
-            renderPosition,
-            offset
+            renderCenter
         })
+    }
+
+    getCenter() {
+        return {
+            x: this.position.x + this.size.width / 2,
+            y: this.position.y + this.size.height / 2
+        }
     }
 
     isCollisionSquare(item) {

@@ -1,6 +1,9 @@
 import Entity from "./Entity.js";
 
 export default class LivingEntity extends Entity {
+    #lives = 0
+    #damage
+
     constructor({
         speed = 1,
         target,
@@ -8,24 +11,26 @@ export default class LivingEntity extends Entity {
         size,
         imgSrc,
         frames,
-        renderPosition,
         radius,
-        damage
+        damage,
+        lives,
+        renderCenter
     } = {}) {
         super({
             position,
             size,
             imgSrc,
             frames,
-            renderPosition
+            renderCenter
         })
 
-        this.living = true
         this.spawned = true
         this.speed = speed
         this.target = target
         this.radius = radius
-        this.damage = damage
+        
+        this.#damage = damage
+        this.#lives = lives
     }
 
     getVelocity(pos1) {
@@ -52,5 +57,13 @@ export default class LivingEntity extends Entity {
         this.updateVelocity(VELOCITY, this.speed, this.target)
 
         super.update(c)
+        return this.#damage
+    }
+
+    damage(amount) {
+        this.#lives -= amount
+        if (this.#lives <= 0) {
+            console.log("kill entity")
+        }
     }
 }

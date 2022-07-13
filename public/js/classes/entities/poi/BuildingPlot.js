@@ -27,7 +27,10 @@ export default class BuildingPlot extends Entity {
         if (this.tower) this.tower.update(c, mouse)
         else if (this.isCollisionSquare(mouse)) {
             if (mouse.clicking) this.tower = new Tower({
-                position: this.position,
+                position: {
+                    x: this.position.x,
+                    y: this.position.y - 144 + this.size.height
+                },
                 size: {
                     width: this.size.width,
                     height: 144
