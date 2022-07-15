@@ -38,3 +38,24 @@ export function drawText(context, text, x, y, { color = "black", bgColor = null,
 }
 
 export function delay(amount) { return new Promise(resolve => setTimeout(resolve, amount)) }
+
+export function isCollisionCircle(cir1, cir2) {
+    const X_DIS = cir1.x - cir2.x
+    const Y_DIS = cir1.y - cir2.y
+    const DISTANCE = Math.hypot(X_DIS, Y_DIS)
+    return DISTANCE < cir1.radius + cir2.radius
+}
+
+export function isCollisionPointCircle(point, cir2) {
+    const X_DIS = point.x - cir2.x
+    const Y_DIS = point.y - cir2.y
+    const DISTANCE = Math.hypot(X_DIS, Y_DIS)
+    return DISTANCE < 1 + cir2.radius
+}
+
+export function isCollisionPointRect(point, rect) {
+    return (point.x > rect.x &&
+        point.x < rect.x + rect.width &&
+        point.y > rect.y &&
+        point.y < rect.y + rect.height)
+}

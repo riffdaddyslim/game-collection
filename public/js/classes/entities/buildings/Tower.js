@@ -1,3 +1,4 @@
+import { isCollisionCircle, isCollisionPointCircle, isCollisionPointRect } from "../../../utils.js";
 import Entity from "../Entity.js";
 import BasicMob from "../mobs/BasicMob.js";
 import Projectile from "../Projectile.js";
@@ -31,8 +32,8 @@ export default class Tower extends Entity {
     #draw(c, mouse) {
         const CENTER = this.getCenter()
         
-        if (this.isCollisionSquare(mouse.target)) {
-            c.fillStyle = "rgba(0,0,0,0.5)"
+        if (isCollisionPointRect(mouse.target, this.getRectHitbox())) {
+            c.fillStyle = "rgba(0,0,0,0.3)"
             c.beginPath()
             c.arc(CENTER.x, CENTER.y, this.radius, 0, Math.PI * 2)
             c.fill()
@@ -44,7 +45,7 @@ export default class Tower extends Entity {
     #getFirstMob() {
         for (let entity of this.game.entities.values()) {
             if (!(entity instanceof BasicMob)) continue
-            if (this.isCollisionCircle(entity)) return entity
+            if (isCollisionCircle(entity.getCircleHitbox(), this.getCircleHitbox())) return entity
         }
 
         return null
@@ -52,7 +53,7 @@ export default class Tower extends Entity {
     }
 
     update(c, mouse) {
-        if (this.target && !this.isCollisionCircle(this.target)) this.target = null
+        if (this.target && !isCollisionCircle(this.target.getCircleHitbox(), this.getCircleHitbox())) this.target = null
         if (!this.target) this.target = this.#getFirstMob()
         
         if (this.lastFrame != this.frames.current) {
@@ -65,14 +66,6 @@ export default class Tower extends Entity {
 
         for (let projectile of this.projectiles.values()) {
             projectile.update(c)
-        }
-    }
-
-    hitTarget(projectile) {
-        this.projectiles.delete(projectile)
-        if (this.target) {
-            this.target.updateLives(projectile.damage)
-            if (this.target.lives.current <= 0) this.target = null
         }
     }
 

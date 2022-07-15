@@ -66,8 +66,8 @@ const DATA = {
         ]
     },
     user: {
-        lives: 20,
-        cash: 150
+        lives: 2000,
+        cash: 1500
     }
 }
 

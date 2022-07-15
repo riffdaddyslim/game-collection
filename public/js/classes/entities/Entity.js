@@ -29,15 +29,17 @@ export default class Entity extends Sprite {
         }
     }
 
-    isCollisionSquare(item) {
-        return (item.x > this.position.x &&
-            item.x < this.position.x + this.size.width &&
-            item.y > this.position.y &&
-            item.y < this.position.y + this.size.height)
+    getRectHitbox() {
+        return {
+            ...this.position,
+            ...this.size
+        }
     }
 
-    isCollisionCircle(item) {
-        const DISTANCE = Math.hypot(item.getCenter().x - this.getCenter().x, item.getCenter().y - this.getCenter().y)
-        return DISTANCE < item.radius / 2 + this.radius
+    getCircleHitbox() {
+        return {
+            ...this.getCenter(),
+            radius: this.radius
+        }
     }
 }

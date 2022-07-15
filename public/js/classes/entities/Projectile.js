@@ -1,3 +1,4 @@
+import { isCollisionCircle } from "../../utils.js";
 import LivingEntity from "./LivingEntity.js";
 
 export default class Projectile extends LivingEntity {
@@ -33,7 +34,13 @@ export default class Projectile extends LivingEntity {
     }
 
     update(c) {
-        if (this.isCollisionCircle(this.target)) this.#tower.hitTarget(this)
+        if (isCollisionCircle(this.target.getCircleHitbox(), this.getCircleHitbox())) this.hitTarget()
         super.update(c)
+    }
+
+    hitTarget() {
+        this.#tower.projectiles.delete(this)
+        this.target.updateLives(this.damage)
+        if (this.target.lives.current <= 0) this.#tower.target = null
     }
 }

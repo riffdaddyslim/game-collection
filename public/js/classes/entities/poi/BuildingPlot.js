@@ -1,3 +1,4 @@
+import { isCollisionPointRect } from "../../../utils.js"
 import Tower from "../buildings/Tower.js"
 import Entity from "../Entity.js"
 
@@ -64,7 +65,10 @@ export default class BuildingPlot extends Entity {
 
     update(c, mouse) {
         if (this.tower) return
-        else if (this.isCollisionSquare(mouse)) {
+        else if (isCollisionPointRect(mouse, {
+            ...this.position,
+            ...this.size
+        })) {
             if (mouse.clicking) {
                 let canAfford = this.game.updateCash(-25)
                 if (canAfford) {
