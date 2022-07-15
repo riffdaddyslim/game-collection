@@ -1,9 +1,6 @@
 import Entity from "./Entity.js";
 
 export default class LivingEntity extends Entity {
-    #lives = 0
-    #damage
-
     constructor({
         speed = 1,
         target,
@@ -13,8 +10,9 @@ export default class LivingEntity extends Entity {
         frames,
         radius,
         damage,
-        lives,
-        renderCenter
+        lives = null,
+        renderCenter,
+        game
     } = {}) {
         super({
             position,
@@ -22,15 +20,26 @@ export default class LivingEntity extends Entity {
             imgSrc,
             frames,
             renderCenter,
-            radius
+            radius,
+            game
         })
 
         this.spawned = true
         this.speed = speed
         this.target = target
         
-        this.#damage = damage
-        this.#lives = lives
+        this.damage = damage
+        this.lives = {
+            current: lives,
+            total: lives
+        }
+    }
+
+    getTarget() {
+        return {
+            x: this.target.x ?? this.target.position.x,
+            y: this.target.y ?? this.target.position.y
+        }
     }
 
     getVelocity(pos1) {
@@ -41,29 +50,33 @@ export default class LivingEntity extends Entity {
         }
     }
 
-    updateVelocity(velocity, speed, target) {
+    updateVelocity(velocity, speed) {
         const X_VEL = (velocity.x * speed) + this.position.x
         const Y_VEL = (velocity.y * speed) + this.position.y
 
-        if (velocity.x > 0) this.position.x = Math.min(X_VEL, target.x)
-        else this.position.x = Math.max(X_VEL, target.x)
+        if (velocity.x > 0) this.position.x = Math.min(X_VEL, this.getTarget().x)
+        else this.position.x = Math.max(X_VEL, this.getTarget().x)
 
-        if (velocity.y > 0) this.position.y = Math.min(Y_VEL, target.y)
-        else this.position.y = Math.max(Y_VEL, target.y)
+        if (velocity.y > 0) this.position.y = Math.min(Y_VEL, this.getTarget().y)
+        else this.position.y = Math.max(Y_VEL, this.getTarget().y)
     }
 
     update(c) {
-        const VELOCITY = this.getVelocity(this.target)
-        this.updateVelocity(VELOCITY, this.speed, this.target)
-
+        const VELOCITY = this.getVelocity(this.getTarget())
+        this.updateVelocity(VELOCITY, this.speed)
         super.update(c)
-        return this.#damage
     }
 
-    damage(amount) {
-        this.#lives -= amount
-        if (this.#lives <= 0) {
-            console.log("kill entity")
+    atTarget() {
+        return Math.round(this.position.x) === Math.round(this.getTarget().x) && Math.round(this.position.y) === Math.round(this.getTarget().y)
+    }
+
+    updateLives(amount) {
+        this.lives.current += amount
+        if (this.lives.current <= 0) {
+            this.spawned = false
+            this.kill()
         }
+        if (this.lives.current > this.lives.total) this.lives.current = this.lives.total
     }
 }

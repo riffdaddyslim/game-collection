@@ -7,11 +7,11 @@ export default class BuildingPlot extends Entity {
             position: { x, y },
             size: { 
                 width, height
-            }
+            },
+            game
         })
         this.hovered = false
         this.tower = false
-        this.game = game
     }
 
     #draw(c) {
@@ -28,7 +28,7 @@ export default class BuildingPlot extends Entity {
         if (this.tower) this.tower.update(c, mouse)
         else if (this.isCollisionSquare(mouse)) {
             if (mouse.clicking) {
-                let canAfford = this.game.updateCash(25)
+                let canAfford = this.game.updateCash(-25)
                 if (canAfford) this.tower = new Tower({
                     position: {
                         x: this.position.x,
@@ -41,7 +41,16 @@ export default class BuildingPlot extends Entity {
                     imgSrc: "/images/tower.png",
                     frames: {
                         max: 19,
-                        duration: 6
+                        duration: 3
+                    },
+                    radius: 250,
+                    renderCenter: 0,
+                    projectile: {
+                        position: {
+                            x: this.position.x + this.size.width / 2,
+                            y: this.position.y - 144 / 2
+                        },
+                        frame: 6
                     },
                     game: this.game
                 })

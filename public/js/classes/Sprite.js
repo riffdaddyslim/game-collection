@@ -35,7 +35,7 @@ export default class Sprite {
         this.image.onload = () => { this.frames.width = this.image.width / this.frames.max }
     }
 
-    #draw(c) {
+    draw(c) {
         c.drawImage(
             this.image,
             this.frames.width * this.frames.current,
@@ -55,6 +55,6 @@ export default class Sprite {
             this.frames.current++
             if (this.frames.current >= this.frames.max) this.frames.current = 0
         }
-        this.#draw(c)
+        this.draw(c)
     }
 }

@@ -7,7 +7,8 @@ export default class Entity extends Sprite {
         imgSrc,
         frames,
         renderCenter,
-        radius
+        radius,
+        game
     } = {}) {
         super({
             position,
@@ -18,6 +19,7 @@ export default class Entity extends Sprite {
         })
 
         this.radius = radius
+        this.game = game
     }
 
     getCenter() {
@@ -35,6 +37,7 @@ export default class Entity extends Sprite {
     }
 
     isCollisionCircle(item) {
-        console.log(item)
+        const DISTANCE = Math.hypot(item.getCenter().x - this.getCenter().x, item.getCenter().y - this.getCenter().y)
+        return DISTANCE < item.radius / 2 + this.radius
     }
 }

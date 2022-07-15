@@ -13,8 +13,8 @@ const DATA = {
                 duration: 10
             },
             speed: 0.3,
-            damage: 3,
-            lives: 20
+            damage: -3,
+            lives: 100
         },
         orc: {
             imgSrc: "/images/orc.png",
@@ -24,8 +24,8 @@ const DATA = {
                 duration: 6
             },
             speed: 1,
-            damage: 1,
-            lives: 2
+            damage: -1,
+            lives: 10
         }
     },
     waves: {
@@ -62,7 +62,7 @@ const DATA = {
                     { delay: 15000, qty: 15, type: "orc", spacing: 64 },
                     { qty: 3, type: "orcKing", path: 0, spacing: 100 }
                 ]
-            },
+            }
         ]
     },
     user: {

@@ -1,4 +1,5 @@
 import { delay, drawText } from "../../utils.js";
+import Tower from "../entities/buildings/Tower.js";
 import BasicMob from "../entities/mobs/BasicMob.js";
 import BuildingPlot from "../entities/poi/BuildingPlot.js";
 import Game from "./Game.js";
@@ -53,11 +54,7 @@ export default class TowerDefenceGame extends Game {
                 const MOB_STATS = this.#enemies[GROUP.type]
                 this.entities.push(new BasicMob({
                     path: this.#getPath(GROUP),
-                    speed: MOB_STATS.speed,
-                    frames: MOB_STATS.frames,
-                    radius: MOB_STATS.radius,
-                    imgSrc: MOB_STATS.imgSrc,
-                    damage: MOB_STATS.damage,
+                    ...MOB_STATS,
                     spacing: currentSpacing,
                     game: this
                 }))
@@ -85,10 +82,14 @@ export default class TowerDefenceGame extends Game {
     }
 
     animate() {
+        this.spawnedEntities = this.entities.filter(entity => entity.spawned)
+        this.towers = this.entities.filter(entity => entity instanceof Tower)
+
+        const ANIMATED_ENTITIES = this.entities.filter(entity => entity.spawned || entity instanceof BuildingPlot)
+
         this.map.drawBackground(this.context)
-        
-        this.entities
-            .filter(entity => entity.spawned || entity instanceof BuildingPlot)
+
+        ANIMATED_ENTITIES
             .sort((a, b) => {
                 return a.position.y - b.position.y
             })

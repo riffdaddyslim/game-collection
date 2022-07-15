@@ -90,13 +90,13 @@ export default class Game {
     }
 
     updateLife(amount) {
-        this.#user.lives -= amount
+        this.#user.lives += amount
         if (this.#user.lives <= 0) this.end()
     }
 
     updateCash(cost) {
         if (this.#user.cash < cost) return false
-        this.#user.cash -= cost
+        this.#user.cash += cost
         return true
     }
 }
