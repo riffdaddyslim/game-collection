@@ -24,7 +24,6 @@ export default class LivingEntity extends Entity {
             game
         })
 
-        this.spawned = true
         this.speed = speed
         this.target = target
         
@@ -73,10 +72,6 @@ export default class LivingEntity extends Entity {
 
     updateLives(amount) {
         this.lives.current += amount
-        if (this.lives.current <= 0) {
-            this.spawned = false
-            this.kill()
-        }
         if (this.lives.current > this.lives.total) this.lives.current = this.lives.total
     }
 }

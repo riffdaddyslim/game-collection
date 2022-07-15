@@ -1,6 +1,8 @@
 import LivingEntity from "./LivingEntity.js";
 
 export default class Projectile extends LivingEntity {
+    #tower
+
     constructor({
         speed,
         target,
@@ -9,9 +11,8 @@ export default class Projectile extends LivingEntity {
         frames,
         radius,
         damage,
-        lives,
-        renderCenter,
-        game
+        game,
+        tower
     }) {
         super({
             speed,
@@ -25,17 +26,14 @@ export default class Projectile extends LivingEntity {
             frames,
             radius,
             damage,
-            lives,
-            renderCenter,
             game
         })
+
+        this.#tower = tower
     }
 
     update(c) {
-        if (this.isCollisionCircle(this.target)) {
-            this.spawned = false
-            this.target.updateLives(this.damage)
-        }
+        if (this.isCollisionCircle(this.target)) this.#tower.hitTarget(this)
         super.update(c)
     }
 }

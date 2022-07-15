@@ -31,7 +31,8 @@ export default class Game {
         })
 
         this.#user = user
-        this.entities = []
+        this.entities = new Set()
+        this.poi = new Set()
         this.currentFrame = 0
         this.mouse = {
             x: null,
@@ -89,13 +90,17 @@ export default class Game {
         this.#gameOver()
     }
 
+    win() {
+        console.log(this.entities)
+    }
+
     updateLife(amount) {
         this.#user.lives += amount
         if (this.#user.lives <= 0) this.end()
     }
 
     updateCash(cost) {
-        if (this.#user.cash < cost) return false
+        if (cost < 0 && this.#user.cash < Math.abs(cost)) return false
         this.#user.cash += cost
         return true
     }

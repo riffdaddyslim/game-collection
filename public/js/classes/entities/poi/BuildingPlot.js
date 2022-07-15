@@ -12,6 +12,24 @@ export default class BuildingPlot extends Entity {
         })
         this.hovered = false
         this.tower = false
+
+
+        this.tower_stats = {
+            height: 144,
+            imgSrc: "/images/tower.png",
+            frames: {
+                max: 19,
+                duration: 3
+            },
+            radius: 250,
+            projectile: {
+                offset: {
+                    x: 64,
+                    y: 0,
+                },
+                frame: 5
+            } 
+        }
     }
 
     #draw(c) {
@@ -24,36 +42,35 @@ export default class BuildingPlot extends Entity {
         }
     }
 
+    #addTower() {
+        this.game.entities.add(
+            new Tower({
+                position: {
+                    x: this.position.x,
+                    y: this.position.y - this.tower_stats.height + this.size.height
+                },
+                size: {
+                    width: this.size.width,
+                    height: this.tower_stats.height
+                },
+                imgSrc: this.tower_stats.imgSrc,
+                frames: this.tower_stats.frames,
+                radius: this.tower_stats.radius,
+                projectile: this.tower_stats.projectile,
+                game: this.game
+            })
+        )
+    }
+
     update(c, mouse) {
-        if (this.tower) this.tower.update(c, mouse)
+        if (this.tower) return
         else if (this.isCollisionSquare(mouse)) {
             if (mouse.clicking) {
                 let canAfford = this.game.updateCash(-25)
-                if (canAfford) this.tower = new Tower({
-                    position: {
-                        x: this.position.x,
-                        y: this.position.y - 144 + this.size.height
-                    },
-                    size: {
-                        width: this.size.width,
-                        height: 144
-                    },
-                    imgSrc: "/images/tower.png",
-                    frames: {
-                        max: 19,
-                        duration: 3
-                    },
-                    radius: 250,
-                    renderCenter: 0,
-                    projectile: {
-                        position: {
-                            x: this.position.x + this.size.width / 2,
-                            y: this.position.y - 144 / 2
-                        },
-                        frame: 6
-                    },
-                    game: this.game
-                })
+                if (canAfford) {
+                    this.tower = true
+                    this.#addTower()
+                }
             }
             else this.hovered = true
         }

@@ -1,5 +1,4 @@
 import { delay, drawText } from "../../utils.js";
-import Tower from "../entities/buildings/Tower.js";
 import BasicMob from "../entities/mobs/BasicMob.js";
 import BuildingPlot from "../entities/poi/BuildingPlot.js";
 import Game from "./Game.js";
@@ -16,13 +15,15 @@ export default class TowerDefenceGame extends Game {
         this.#waves = data.waves
         this.#enemies = data.enemies
         this.#maps = data.maps
+
+        this.lastWave = false
     }
 
     loadMap(mapIndex) {
         super.loadMap(this.#maps[mapIndex]).then(data => {
             this.#paths = data.paths
             for (let buildingPlot of data.buildingPlots) {
-                this.entities.push(new BuildingPlot({...buildingPlot, game: this}))
+                this.poi.add(new BuildingPlot({...buildingPlot, game: this}))
             }
             this.createWave()
             this.animate()
@@ -39,7 +40,7 @@ export default class TowerDefenceGame extends Game {
     }
 
     async nextWave() {
-        if (this.#currentWave === this.#waves[this.mapKey].length - 1) return
+        if (this.#currentWave === this.#waves[this.mapKey].length - 1) return this.lastWave = true
         this.#currentWave++
         this.createWave()
     }
@@ -52,9 +53,9 @@ export default class TowerDefenceGame extends Game {
             let currentSpacing = 0
             for (let qty = 1; qty <= GROUP.qty; qty++) {
                 const MOB_STATS = this.#enemies[GROUP.type]
-                this.entities.push(new BasicMob({
-                    path: this.#getPath(GROUP),
+                this.entities.add(new BasicMob({
                     ...MOB_STATS,
+                    path: this.#getPath(GROUP),
                     spacing: currentSpacing,
                     game: this
                 }))
@@ -71,31 +72,25 @@ export default class TowerDefenceGame extends Game {
         const TEXT = `Round: ${this.#currentWave + 1} of ${this.#waves[this.mapKey].length}`
         this.context.font = "bold 20px Verdana"
         drawText(this.context, TEXT, 0, 0, { bgColor: "rgba(0,0,0,0.6)", color: "white" })
-
-        // this.context.fillStyle = "rgba(0,0,0,0.6)"
-        // this.context.fillRect(0, 0, this.context.measureText(TEXT).width + 25, 40)
-        
-        // this.context.fillStyle = "white"
-        // this.context.fillText(TEXT, 10, 25)
-
         super.renderUI()
     }
 
     animate() {
-        this.spawnedEntities = this.entities.filter(entity => entity.spawned)
-        this.towers = this.entities.filter(entity => entity instanceof Tower)
-
-        const ANIMATED_ENTITIES = this.entities.filter(entity => entity.spawned || entity instanceof BuildingPlot)
-
+        //if (this.lastWave) console.log(this.entities)
         this.map.drawBackground(this.context)
-
-        ANIMATED_ENTITIES
+        
+        for (let poi of this.poi.values()) {
+            poi.update(this.context, this.mouse)
+        }
+        
+        Array.from(this.entities.values())
             .sort((a, b) => {
                 return a.position.y - b.position.y
             })
             .forEach(entity => {
                 entity.update(this.context, this.mouse)
             })
+
 
         this.map.drawDecorations(this.context)
         super.animate()

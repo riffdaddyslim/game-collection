@@ -1,4 +1,5 @@
 import Entity from "../Entity.js";
+import BasicMob from "../mobs/BasicMob.js";
 import Projectile from "../Projectile.js";
 
 export default class Tower extends Entity {
@@ -8,7 +9,6 @@ export default class Tower extends Entity {
         imgSrc,
         frames,
         radius,
-        renderCenter,
         game,
         projectile
     } = {}) {
@@ -17,13 +17,15 @@ export default class Tower extends Entity {
             size,
             imgSrc,
             frames,
-            renderCenter,
+            renderCenter: 0,
             radius,
             game
         })
 
-        this.projectiles = []
+        this.projectiles = new Set()
         this.projectile = projectile
+        this.target = null
+        this.lastFrame = 0
     }
 
     #draw(c, mouse) {
@@ -39,24 +41,54 @@ export default class Tower extends Entity {
         super.draw(c, mouse)
     }
 
+    #getFirstMob() {
+        for (let entity of this.game.entities.values()) {
+            if (!(entity instanceof BasicMob)) continue
+            if (this.isCollisionCircle(entity)) return entity
+        }
+
+        return null
+
+    }
+
     update(c, mouse) {
-        const TARGET = this.game.spawnedEntities.find(entity => this.isCollisionCircle(entity))
+        if (this.target && !this.isCollisionCircle(this.target)) this.target = null
+        if (!this.target) this.target = this.#getFirstMob()
         
-        if (TARGET && this.frames.current === this.projectile.frame) this.projectiles.push(new Projectile({
+        if (this.lastFrame != this.frames.current) {
+            this.lastFrame = this.frames.current
+            if (this.target && this.frames.current === this.projectile.frame) this.#fireProjectile()
+        }
+        if (this.target || !this.target && this.frames.current != 0) super.update(c)
+
+        this.#draw(c, mouse)
+
+        for (let projectile of this.projectiles.values()) {
+            projectile.update(c)
+        }
+    }
+
+    hitTarget(projectile) {
+        this.projectiles.delete(projectile)
+        if (this.target) {
+            this.target.updateLives(projectile.damage)
+            if (this.target.lives.current <= 0) this.target = null
+        }
+    }
+
+    #fireProjectile() {
+        this.projectiles.add(new Projectile({
             imgSrc: "/images/projectile.png",
-            target: TARGET,
-            position: {...this.projectile.position},
+            target: this.target,
+            position: {
+                x: this.position.x + this.projectile.offset.x,
+                y: this.position.y + this.projectile.offset.y
+            },
             damage: -1,
             radius: 15,
             speed: 3,
-            game: this.game
+            game: this.game,
+            tower: this
         }))
-
-        if (TARGET || !TARGET && this.frames.current != 0) super.update(c)
-
-        this.#draw(c, mouse)
-        this.projectiles.filter(projectile => projectile.spawned).forEach(projectile => {
-            projectile.update(c)
-        })
     }
 }

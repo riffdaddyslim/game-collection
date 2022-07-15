@@ -27,10 +27,10 @@ export default class BasicMob extends LivingEntity {
 
     #draw(c) {
         // Render Hitbox
-        c.fillStyle = "rgba(0,0,0,0.5)"
-        c.beginPath()
-        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
-        c.fill()
+        // c.fillStyle = "rgba(0,0,0,0.5)"
+        // c.beginPath()
+        // c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+        // c.fill()
 
         // Draw Health bar
         const X = this.position.x - this.size.width / 2
@@ -44,24 +44,22 @@ export default class BasicMob extends LivingEntity {
 
     update(c) {
         // Die Animation
-        // if (this.lives.current <= 0) {
-        //     this.spawned = false
-        // }
+        if (this.lives.current <= 0) return this.kill()
 
         this.target = this.#path[this.#waypointIndex]
-        if (this.atTarget()) this.#waypointIndex++
-        if (this.#waypointIndex === this.#path.length) this.spawned = false
-        
-        this.#draw(c)
-        super.update(c)
-        
-        // Made it to end of the path
-        if (this.#path.length === this.#waypointIndex) this.game.updateLife(this.damage)
+
+        if (this.#path.length === this.#waypointIndex) {
+            this.game.updateLife(this.damage)
+            this.game.entities.delete(this)
+        } else {
+            if (this.atTarget()) this.#waypointIndex++
+            this.#draw(c)
+            super.update(c)
+        }
     }
 
     kill() {
-        // const INDEX = this.game.entities.findIndex(entity => entity === this)
-        // this.game.entities.splice(INDEX, 1)
+        this.game.entities.delete(this)
         this.game.updateCash(this.lives.total * 2)
     }
 }
