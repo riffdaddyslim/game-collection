@@ -4,6 +4,15 @@ const APP = express()
 
 APP.use("/", express.static("./public"))
 
+/**
+ * @typedef TileLayer Array of tile numbers for the tileset
+ */
+
+/**
+ * 
+ * @param {TileLayer} layer 
+ * @returns {Array[]} 2d array of the layer to make calculating the tile location easier
+ */
 function make2dArray(layer) {
     let arr_2d = []
     for (let i = 0; i < layer.data.length; i += layer.width) {

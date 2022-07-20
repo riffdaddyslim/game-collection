@@ -43,7 +43,6 @@ export default class BasicMob extends LivingEntity {
     }
 
     update(c) {
-        // Die Animation
         if (this.lives.current <= 0) return this.kill()
 
         this.target = this.#path[this.#waypointIndex]

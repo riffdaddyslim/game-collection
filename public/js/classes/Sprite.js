@@ -1,3 +1,6 @@
+/**
+ * Class used to render sprites
+ */
 export default class Sprite {
     #renderCenter
 
